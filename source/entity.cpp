@@ -1,24 +1,29 @@
 #include "../header/entity.hpp"
 
-Entity::Entity(FILE* obj) :
+Entity::Entity(std::fstream* obj) :
 _vertex(0),
 _nVertex(0) {
+    if (!ObjParser::parseVertex(obj, *this)) {
+        std::cout << "ERROR: \n" << " Failed to create Entity (>parseVertex<)" << std::endl;
+    }
 }
 Entity::~Entity() {
-}
-
-std::FILE* Entity::getObj() const {
-    return (this->_obj);
 }
 std::vector<float> Entity::getVertex() const {
     return (this->_vertex);
 }
+std::vector<unsigned int> Entity::getFace() const {
+    return (this->_face);
+}
 std::size_t Entity::getVertexSize() const {
     return (this->_nVertex);
 }
-void Entity::setVertex(std::vector<float> vertex) {
-    this->_vertex = vertex;
+std::size_t Entity::getFaceSize() const {
+    return (this->_nFace);
 }
-void Entity::setVertexSize(std::size_t n) {
-    this->_nVertex = n;
+void Entity::setAll(std::vector<float> v, std::vector<unsigned int> f) {
+    this->_vertex = v;
+    this->_face = f;
+    this->_nVertex = v.size();
+    this->_nFace = f.size();
 }

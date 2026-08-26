@@ -7,21 +7,24 @@
 #include <string>
 #include <cstdio>
 #include <stdlib.h>
+#include <fstream>
+#include "../header/objParser.hpp"
 
 class Entity {
     private:
-        std::FILE* _obj;
         std::vector<float> _vertex;
+        std::vector<unsigned int> _face;
         std::size_t _nVertex;
+        std::size_t _nFace;
     public:
-        Entity(std::FILE* obj);
+        Entity(std::fstream* obj);
         ~Entity();
 
-        std::FILE* getObj() const;
         std::vector<float> getVertex() const;
+        std::vector<unsigned int> getFace() const;
         std::size_t getVertexSize() const;
-        void setVertex(std::vector<float> vertex);
-        void setVertexSize(std::size_t n);
+        std::size_t getFaceSize() const;
+        void setAll(std::vector<float> v, std::vector<unsigned int> f);
 };
 
 #endif
