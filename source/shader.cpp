@@ -1,8 +1,11 @@
 #include "../header/shader.hpp"
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
-    const char* vertexShaderSource = this->retrieveShader(vertexPath);
-    const char* fragmentShaderSource = this->retrieveShader(fragmentPath); 
+    _id = glCreateProgram();
+    std::string vertexCode = this->retrieveShader(vertexPath);
+    std::string fragmentCode = this->retrieveShader(fragmentPath);
+    const char* vertexShaderSource = vertexCode.c_str();
+    const char* fragmentShaderSource = fragmentCode.c_str();
     unsigned int vertexShader, fragmentShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -20,7 +23,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     glDeleteShader(fragmentShader);
 }
 
-const char* Shader::retrieveShader(const char* path) {
+std::string Shader::retrieveShader(const char* path) {
     std::fstream file(path);
     if (!file.is_open()) {
         throw StreamException();
@@ -28,7 +31,7 @@ const char* Shader::retrieveShader(const char* path) {
 
     std::stringstream ss;
     ss << file.rdbuf();
-    return (ss.str().c_str());
+    return (ss.str());
 }
 
 void Shader::use() {

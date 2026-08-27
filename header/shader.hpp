@@ -8,7 +8,7 @@ class Shader {
         unsigned int _id;
     public:
         Shader(const char* vertexPath, const char* fragmentPath);
-        const char* retrieveShader(const char* path);
+        std::string retrieveShader(const char* path);
         void use();
 
         class StreamException : public std::exception {

@@ -43,19 +43,20 @@ int main(int ac, char* av[]) {
 
     /*      OPENGL & GLFW RENDER LOOP      */
     try {
+        // Basicly parsing and init glfw
         Entity entity(fileVector[objIndex - 1]);
         Module mdl;
         Shader sha("source/glsl/vertex.glsl", "source/glsl/fragment.glsl");
+
+        // Vertex|Face are load with the shaders,
+            // bind and ready to be use.
+        mdl.loadModuleFromEntity(entity);
+
+        // Render loop
         while (RENDER_LOOP_UNTIL_WINDOW_CLOSE) {
             mdl.clearScreen(CLEAR_SCREEN_RGB);
             mdl.processInput();
-            unsigned int VAO;
-            glGenVertexArrays(1, &VAO);  
-            mdl.genVertexObject(GL_ARRAY_BUFFER, entity.getVertexSize(), entity.getVertex().data());
-            mdl.linkVertexAttrib(0, 3, GL_FLOAT, 3 * sizeof(float));
-            mdl.genVertexObject(GL_ELEMENT_ARRAY_BUFFER, entity.getFaceSize(), entity.getFace().data());
             sha.use();
-            glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, entity.getFaceSize(), GL_UNSIGNED_INT, 0);
             mdl.swapAndProcess();
         }

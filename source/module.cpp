@@ -28,6 +28,15 @@ void Module::linkVertexAttrib(unsigned int i, unsigned int n, GLenum type, size_
     glEnableVertexAttribArray(i);
 }
 
+void Module::loadModuleFromEntity(Entity& entity) {
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);  
+    glBindVertexArray(VAO);
+    this->genVertexObject(GL_ARRAY_BUFFER, entity.getVertexSize(), entity.getVertex().data());
+    this->linkVertexAttrib(0, 3, GL_FLOAT, sizeof(float));
+    this->genVertexObject(GL_ELEMENT_ARRAY_BUFFER, entity.getFaceSize(), entity.getFace().data());
+}
+
 GLFWwindow* Module::getWindow() const {
     return (this->_window);
 }
