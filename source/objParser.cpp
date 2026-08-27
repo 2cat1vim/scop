@@ -75,7 +75,7 @@ int ObjParser::selectObj(std::vector<std::fstream*>& fileVector) {
             std::string path = pathDir;
             path.append(file);
             std::fstream* pNewFile = new std::fstream(path.c_str());
-            if (!pNewFile) {
+            if (!pNewFile->is_open()) {
                 throw ObjParser::StreamException();
             }
             std::cout << "File[" << i + 1 << "]: " << file << std::endl;

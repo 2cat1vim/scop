@@ -11,7 +11,8 @@ LDFLAGS   = -lglfw -lGL -lm
 SRCS      = source/main.cpp \
             source/entity.cpp \
 			source/objParser.cpp \
-			source/module.cpp
+			source/module.cpp \
+			source/shader.cpp
 
 SRCS_C    = external/glad/glad.c
 

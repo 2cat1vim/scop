@@ -16,7 +16,16 @@ class Module {
         void processInput() const;
         void clearScreen(float r, float g, float b) const;
 
-        template <typename T> unsigned int genVertexObject(size_t size, T* data);
+        template <typename T>
+        unsigned int genVertexObject(GLenum type, size_t size, T* data) {
+            unsigned int vertexObject;
+            glGenBuffers(1, &vertexObject);
+            glBindBuffer(type, vertexObject);
+            glBufferData(type, size * sizeof(T), data, GL_STATIC_DRAW);
+            return (vertexObject);
+        }
+
+        void linkVertexAttrib(unsigned int i, unsigned int n, GLenum type, size_t size);
 
         class GlfwWindowFailed : public std::exception {
             public:

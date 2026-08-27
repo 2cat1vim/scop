@@ -23,15 +23,10 @@ Module::Module() {
     std::cout << "[scop]: Glfw init -> (hint, window, glad, viewport)" << std::endl;
 }
 
-template <typename T>
-unsigned int Module::genVertexObject(size_t size, T* data) {
-    unsigned int vertexObject;
-    glGenBuffers(1, &vertexObject);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexObject);
-    glBufferData(GL_ARRAY_BUFFER, size * sizeof(T), data, GL_STATIC_DRAW);
-    return (vertexObject);
+void Module::linkVertexAttrib(unsigned int i, unsigned int n, GLenum type, size_t size) {
+    glVertexAttribPointer(i, n, type, GL_FALSE, n * size, (void*)0);
+    glEnableVertexAttribArray(i);
 }
-
 
 GLFWwindow* Module::getWindow() const {
     return (this->_window);
