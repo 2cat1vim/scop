@@ -4,8 +4,11 @@ Entity::Entity(std::fstream* obj) :
 _vertex(0),
 _nVertex(0) {
     if (!ObjParser::parseVertex(obj, *this)) {
-        std::cout << "ERROR: \n" << " Failed to create Entity (>parseVertex<)" << std::endl;
+        throw EntityCreationException();
     }
+    system("clear");
+    std::cout << "[scop]: Obj file is parsed successfully" << std::endl;
+    std::cout << "[scop]: Entity created linked to the Obj" << std::endl;
 }
 Entity::~Entity() {
 }

@@ -1,8 +1,4 @@
 #include "../header/objParser.hpp"
-#include <sstream>
-# define VERTEX "v"
-# define FACE "f"
-# define SKIP_HEADER 2
 
 bool ObjParser::parseVertex(std::fstream* obj, Entity& entity) {
     std::vector<float> queue_vertex;
@@ -11,12 +7,12 @@ bool ObjParser::parseVertex(std::fstream* obj, Entity& entity) {
     char queue_type = 0;
     while (std::getline(*obj, line)) {
         if (line[0] == 'v') {
-            queue = line.substr(SKIP_HEADER, line.size());
+            queue = line.substr(2, line.size());
             queue.push_back(' ');
             queue_type = 'v';
         }
         else if (line[0] == 'f') {
-            queue = line.substr(SKIP_HEADER, line.size());
+            queue = line.substr(2, line.size());
             queue.push_back(' ');
             queue_type = 'f';
         }
@@ -66,8 +62,7 @@ int ObjParser::selectObj(std::vector<std::fstream*>& fileVector) {
     struct dirent* next;
     DIR* dir = opendir(pathDir.c_str());
     if (!dir) {
-        std::cerr << "ERROR:\n " << pathDir << " : is missing" << std::endl;
-        return (-1);
+        throw ObjParser::DirException();
     }
     size_t i = 0;
     while ((next = readdir(dir))) {
@@ -81,8 +76,7 @@ int ObjParser::selectObj(std::vector<std::fstream*>& fileVector) {
             path.append(file);
             std::fstream* pNewFile = new std::fstream(path.c_str());
             if (!pNewFile) {
-                std::cerr << "ERROR:\n " << file << " : fopen failed" << std::endl;
-                return (-1);
+                throw ObjParser::StreamException();
             }
             std::cout << "File[" << i + 1 << "]: " << file << std::endl;
             fileVector.push_back(pNewFile);
@@ -94,22 +88,19 @@ int ObjParser::selectObj(std::vector<std::fstream*>& fileVector) {
     std::cout << "Select a file to load (ex: 1): ";
     std::cin >> input;
     if (std::cin.eof()) {
-        std::cerr << "\nEOF:\n " << " CTRL-D Exit" << std::endl;
-        return (-1); 
+        throw ObjParser::EOFException();
     }
     int inputAsInt = atoi(input.c_str());
     int vectorSize = fileVector.end() - fileVector.begin();
     if (vectorSize < inputAsInt || inputAsInt <= 0) {
-        std::cerr << "ERROR:\n " << inputAsInt <<
-            " : index doesn't exist" << std::endl;
-        return (-1);
+        throw ObjParser::IndexException();
     }
     return (inputAsInt);
 }
 
 void ObjParser::fcloseAll(std::vector<std::fstream*>& list, int index) {
     for (size_t i = 0; i < list.size(); ++i) {
-        if (static_cast<int>(i) != index && list[i] != NULL) {
+        if (static_cast<int>(i) != index && list[i]) {
             list[i]->close();
             delete list[i];
         }

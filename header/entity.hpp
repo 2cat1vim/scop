@@ -8,6 +8,8 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <fstream>
+#include <exception>
+#include <sstream>
 #include "../header/objParser.hpp"
 
 class Entity {
@@ -25,6 +27,13 @@ class Entity {
         std::size_t getVertexSize() const;
         std::size_t getFaceSize() const;
         void setAll(std::vector<float> v, std::vector<unsigned int> f);
+
+        class EntityCreationException : public std::exception {
+            public:
+                const char* what() const throw() {
+                    return "ERROR: \n Failed to create Entity";
+                }
+        };
 };
 
 #endif

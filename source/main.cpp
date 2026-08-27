@@ -1,6 +1,10 @@
 #include "../header/entity.hpp"
-#include "../external/glad/glad.h"
-#include <GLFW/glfw3.h>
+#include "../header/module.hpp"
+
+# define RENDER_LOOP_UNTIL_WINDOW_CLOSE \
+    !glfwWindowShouldClose(mdl.getWindow())
+# define CLEAR_SCREEN_RGB \
+    0.1f, 0.1f, 0.1f
 
 void printHdr() {
     std::cout << "  \n   $$$$$$$\\  $$$$$$$\\  $$$$$$\\   $$$$$$\\ " << std::endl;  
@@ -21,13 +25,34 @@ int main(int ac, char* av[]) {
         return (1);
     }
     printHdr();
+
+    /*       USER OBJ FILE SELECTION       */
     std::vector<std::fstream*> fileVector;
-    int objIndex = ObjParser::selectObj(fileVector);
-    if (objIndex == -1) {
+    int objIndex = -1;
+    try {
+        objIndex = ObjParser::selectObj(fileVector);
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
         ObjParser::fcloseAll(fileVector, -1);
         return (1);
     }
-    int index = objIndex - 1;
-    ObjParser::fcloseAll(fileVector, index);
-    Entity entity(fileVector[index]);
+    ObjParser::fcloseAll(fileVector, objIndex - 1);
+    /***************************************/
+
+    /*      OPENGL & GLFW RENDER LOOP      */
+    try {
+        Entity entity(fileVector[objIndex - 1]);
+        Module mdl;
+        while (RENDER_LOOP_UNTIL_WINDOW_CLOSE) {
+            mdl.clearScreen(CLEAR_SCREEN_RGB);
+            mdl.processInput();
+            mdl.genVertexObject(entity.getVertexSize(), entity.getVertex());
+            mdl.swapAndProcess();
+        }
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
+    /****************************************/
 }
